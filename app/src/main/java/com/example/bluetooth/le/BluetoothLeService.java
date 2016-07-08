@@ -33,6 +33,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -121,6 +123,7 @@ public class BluetoothLeService extends Service {
 			broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
 			if (characteristic.getValue() != null) {
 
+				//System.out.format("%x",characteristic.getIntValue( characteristic.FORMAT_UINT8,0));
 				System.out.println(characteristic.getStringValue(0));
 			}
 			System.out.println("--------onCharacteristicChanged-----");
@@ -176,8 +179,7 @@ public class BluetoothLeService extends Service {
 
 				System.out.println("ppp" + new String(data) + "\n"
 						+ stringBuilder.toString());
-				intent.putExtra(EXTRA_DATA, new String(data) + "\n"
-						+ stringBuilder.toString());
+				intent.putExtra(EXTRA_DATA, stringBuilder.toString());
 			}
 		}
 		sendBroadcast(intent);
@@ -313,7 +315,7 @@ public class BluetoothLeService extends Service {
 			Log.w(TAG, "BluetoothAdapter not initialized");
 			return;
 		}
-
+		characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE );
 		mBluetoothGatt.writeCharacteristic(characteristic);
 
 	}
@@ -350,14 +352,28 @@ public class BluetoothLeService extends Service {
 			return;
 		}
 		mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-/*		BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID
-				.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
-		if (descriptor != null) {
-			System.out.println("write descriptor");
-			descriptor
-					.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+
+		String filename = "message-save.txt";
+		String string = "start data collection！";
+		FileOutputStream outputStream;
+
+		try {
+			outputStream = new FileOutputStream(new File(getExternalFilesDir(
+					null), filename));
+			outputStream.write(string.getBytes());
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		List<BluetoothGattDescriptor> descriptors = characteristic.getDescriptors();
+		if (descriptors != null) {
+			System.out.println("write descriptors");
+			BluetoothGattDescriptor descriptor=descriptors.get(0);
+			descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
 			mBluetoothGatt.writeDescriptor(descriptor);
-		}*/
+		}
+
 		/*
 		 * // This is specific to Heart Rate Measurement. if
 		 * (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
