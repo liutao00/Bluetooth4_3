@@ -190,8 +190,9 @@ public class DeviceControlActivity extends Activity {
 				if (characteristic.getUuid().toString()
 						.equals("6e400002-b5a3-f393-e0a9-e50e24dcca9e")) {
 					String data = "05fb0C0713";
+					byte[] command_start = MainActivity.string2bytes(data);
 					System.out.println(data);
-					characteristic.setValue(data.getBytes());
+					characteristic.setValue(command_start);
 					mBluetoothLeService.writeCharacteristic(characteristic);
 				}
 
