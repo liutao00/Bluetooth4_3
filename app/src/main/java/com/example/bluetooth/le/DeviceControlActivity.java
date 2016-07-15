@@ -56,6 +56,7 @@ public class DeviceControlActivity extends Activity {
 
 	public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
 	public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+	public static int WriteFlag;
 
 	private TextView mConnectionState;
 	private TextView mDataField;
@@ -189,12 +190,27 @@ public class DeviceControlActivity extends Activity {
 
 				if (characteristic.getUuid().toString()
 						.equals("6e400002-b5a3-f393-e0a9-e50e24dcca9e")) {
-					String data = "05fb0C0713";
-					byte[] command_start = MainActivity.string2bytes(data);
-					System.out.println(data);
-					characteristic.setValue(command_start);
+					String data1 = "05fb0C0713";
+					String data2 = "05fb0C0814";
+					byte[] command_start = MainActivity.string2bytes(data1);
+					byte[] command_end = MainActivity.string2bytes(data2);
+
+					if(WriteFlag == 0) {
+						System.out.println(data1);
+						characteristic.setValue(command_start);
+						WriteFlag = WriteFlag + 1;
+					}
+					else{
+						System.out.println(data2);
+						characteristic.setValue(command_end);
+						WriteFlag = WriteFlag - 1;
+					}
+
 					mBluetoothLeService.writeCharacteristic(characteristic);
+
 				}
+
+
 
 				if (characteristic.getUuid().toString()
 						.equals("0000fff5-0000-1000-8000-00805f9b34fb")) {
