@@ -62,6 +62,8 @@ public class BluetoothLeService extends Service {
 	public final static String ACTION_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
 	public final static String EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA";
 
+
+
 	public final static UUID UUID_HEART_RATE_MEASUREMENT = UUID
 			.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
 
@@ -124,7 +126,7 @@ public class BluetoothLeService extends Service {
 			if (characteristic.getValue() != null) {
 
 				//System.out.format("%x",characteristic.getIntValue( characteristic.FORMAT_UINT8,0));
-				System.out.println(characteristic.getStringValue(0));
+				//System.out.println(characteristic.getStringValue(0));
 			}
 			System.out.println("--------onCharacteristicChanged-----");
 		}
@@ -177,9 +179,15 @@ public class BluetoothLeService extends Service {
 				for (byte byteChar : data)
 					stringBuilder.append(String.format("%02X ", byteChar));
 
-				System.out.println("ppp" + new String(data) + "\n"
-						+ stringBuilder.toString());
+				System.out.println(stringBuilder.toString());
 				intent.putExtra(EXTRA_DATA, stringBuilder.toString());
+
+				try {
+					DeviceControlActivity.outputStream.write(stringBuilder.toString().getBytes());
+					//outputStream.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		sendBroadcast(intent);
@@ -353,18 +361,6 @@ public class BluetoothLeService extends Service {
 		}
 		mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
-		String filename = "message-save.txt";
-		String string = "start data collection！";
-		FileOutputStream outputStream;
-
-		try {
-			outputStream = new FileOutputStream(new File(getExternalFilesDir(
-					null), filename));
-			outputStream.write(string.getBytes());
-			outputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		List<BluetoothGattDescriptor> descriptors = characteristic.getDescriptors();
 		if (descriptors != null) {

@@ -36,6 +36,8 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +72,9 @@ public class DeviceControlActivity extends Activity {
 
 	private final String LIST_NAME = "NAME";
 	private final String LIST_UUID = "UUID";
+
+	public static FileOutputStream outputStream;
+	String filename = "message-save.txt";
 
 	// Code to manage Service lifecycle.
 	private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -199,11 +204,26 @@ public class DeviceControlActivity extends Activity {
 						System.out.println(data1);
 						characteristic.setValue(command_start);
 						WriteFlag = WriteFlag + 1;
+
+						try {
+							outputStream = new FileOutputStream(new File(getExternalFilesDir(
+									null), filename));
+							//DeviceControlActivity.outputStream.write(string.getBytes());
+							//outputStream.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 					else{
 						System.out.println(data2);
 						characteristic.setValue(command_end);
 						WriteFlag = WriteFlag - 1;
+
+						try {
+							outputStream.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 
 					mBluetoothLeService.writeCharacteristic(characteristic);
