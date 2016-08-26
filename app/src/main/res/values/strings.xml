@@ -17,6 +17,9 @@
     <string name="app_name">BLE Sample</string>
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="label_data">Data:</string>
+    <string name="label_acc">Acceleration:</string>
+    <string name="label_pre">Pressure:</string>
+    <string name="label_gyr">Gyroscope:</string>
     <string name="label_device_address">Device address:</string>
     <string name="label_state">State:</string>
     <string name="no_data">No data</string>

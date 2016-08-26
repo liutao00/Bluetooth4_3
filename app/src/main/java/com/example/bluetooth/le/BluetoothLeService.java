@@ -62,6 +62,15 @@ public class BluetoothLeService extends Service {
 	public final static String ACTION_DATA_AVAILABLE = "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
 	public final static String EXTRA_DATA = "com.example.bluetooth.le.EXTRA_DATA";
 
+	public final static String PRE_DATA = "com.example.bluetooth.le.PRE_DATA";
+	public final static String PRE2_DATA = "com.example.bluetooth.le.PRE2_DATA";
+	public final static String PRE3_DATA = "com.example.bluetooth.le.PRE3_DATA";
+	public final static String ACC_DATA = "com.example.bluetooth.le.ACC_DATA";
+	public final static String ACC2_DATA = "com.example.bluetooth.le.ACC2_DATA";
+	public final static String ACC3_DATA = "com.example.bluetooth.le.ACC3_DATA";
+	public final static String GYR_DATA = "com.example.bluetooth.le.GYR_DATA";
+	public final static String GYR2_DATA = "com.example.bluetooth.le.GYR2_DATA";
+	public final static String GYR3_DATA = "com.example.bluetooth.le.GYR3_DATA";
 
 
 	public final static UUID UUID_HEART_RATE_MEASUREMENT = UUID
@@ -176,11 +185,60 @@ public class BluetoothLeService extends Service {
 			if (data != null && data.length > 0) {
 				final StringBuilder stringBuilder = new StringBuilder(
 						data.length);
-				for (byte byteChar : data)
-					stringBuilder.append(String.format("%02X ", byteChar));
 
+				final StringBuilder stringBuilder2 = new StringBuilder(
+						data.length);
+
+				for (byte byteChar : data) {
+					stringBuilder.append(String.format("%02X ", byteChar));
+					stringBuilder2.append(String.format("%02X", byteChar));
+				}
 				System.out.println(stringBuilder.toString());
 				intent.putExtra(EXTRA_DATA, stringBuilder.toString());
+
+				String temp = "0400";
+				Integer TE = Integer.parseInt(temp,16);
+
+				temp = stringBuilder2.substring(2,6);
+				Integer pre1 = Integer.parseInt(temp,16);
+				temp = stringBuilder2.substring(6,10);
+				Integer pre2 = Integer.parseInt(temp,16);
+				temp = stringBuilder2.substring(10,14);
+				Integer pre3 = Integer.parseInt(temp,16);
+
+				temp = stringBuilder2.substring(14,18);
+				Integer acc1 = Integer.parseInt(temp,16);
+				temp = stringBuilder2.substring(18,22);
+				Integer acc2 = Integer.parseInt(temp,16);
+				temp = stringBuilder2.substring(22,26);
+				Integer acc3 = Integer.parseInt(temp,16);
+
+				temp = stringBuilder2.substring(26,30);
+				Integer gyr1 = Integer.parseInt(temp,16);
+				temp = stringBuilder2.substring(30,34);
+				Integer gyr2 = Integer.parseInt(temp,16);
+				temp = stringBuilder2.substring(34,38);
+				Integer gyr3 = Integer.parseInt(temp,16);
+
+				acc1 = ((acc1 & 0x8000) > 0) ? (acc1 - 0x10000) : (acc1);
+				acc2 = ((acc2 & 0x8000) > 0) ? (acc2 - 0x10000) : (acc2);
+				acc3 = ((acc3 & 0x8000) > 0) ? (acc3 - 0x10000) : (acc3);
+
+				gyr1 = ((gyr1 & 0x8000) > 0) ? (gyr1 - 0x10000) : (gyr1);
+				gyr2 = ((gyr2 & 0x8000) > 0) ? (gyr2 - 0x10000) : (gyr2);
+				gyr3 = ((gyr3 & 0x8000) > 0) ? (gyr3 - 0x10000) : (gyr3);
+
+				intent.putExtra(PRE_DATA, pre1.toString());
+				intent.putExtra(PRE2_DATA, pre2.toString());
+				intent.putExtra(PRE3_DATA, pre3.toString());
+
+				intent.putExtra(ACC_DATA, acc1.toString());
+				intent.putExtra(ACC2_DATA, acc2.toString());
+				intent.putExtra(ACC3_DATA, acc3.toString());
+
+				intent.putExtra(GYR_DATA, gyr1.toString());
+				intent.putExtra(GYR2_DATA, gyr2.toString());
+				intent.putExtra(GYR3_DATA, gyr3.toString());
 
 				try {
 					DeviceControlActivity.outputStream.write(stringBuilder.toString().getBytes());

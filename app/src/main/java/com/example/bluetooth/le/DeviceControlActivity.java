@@ -62,6 +62,9 @@ public class DeviceControlActivity extends Activity {
 
 	private TextView mConnectionState;
 	private TextView mDataField;
+	private TextView mDataField1;
+	private TextView mDataField2;
+	private TextView mDataField3;
 	private String mDeviceName;
 	private String mDeviceAddress;
 	private ExpandableListView mGattServicesList;
@@ -129,7 +132,16 @@ public class DeviceControlActivity extends Activity {
 						.getSupportedGattServices());
 			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
 				displayData(intent
-						.getStringExtra(BluetoothLeService.EXTRA_DATA));
+						.getStringExtra(BluetoothLeService.EXTRA_DATA),intent
+						.getStringExtra(BluetoothLeService.PRE_DATA),intent
+						.getStringExtra(BluetoothLeService.PRE2_DATA),intent
+						.getStringExtra(BluetoothLeService.PRE3_DATA),intent
+						.getStringExtra(BluetoothLeService.ACC_DATA),intent
+						.getStringExtra(BluetoothLeService.ACC2_DATA),intent
+						.getStringExtra(BluetoothLeService.ACC3_DATA),intent
+						.getStringExtra(BluetoothLeService.GYR_DATA),intent
+						.getStringExtra(BluetoothLeService.GYR2_DATA),intent
+						.getStringExtra(BluetoothLeService.GYR3_DATA));
 			}
 		}
 	};
@@ -273,6 +285,9 @@ public class DeviceControlActivity extends Activity {
 	private void clearUI() {
 		mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
 		mDataField.setText(R.string.no_data);
+		mDataField1.setText(R.string.no_data);
+		mDataField2.setText(R.string.no_data);
+		mDataField3.setText(R.string.no_data);
 	}
 
 	@Override
@@ -289,7 +304,11 @@ public class DeviceControlActivity extends Activity {
 		mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
 		mGattServicesList.setOnChildClickListener(servicesListClickListner);
 		mConnectionState = (TextView) findViewById(R.id.connection_state);
+
 		mDataField = (TextView) findViewById(R.id.data_value);
+		mDataField1 = (TextView) findViewById(R.id.pre_value);
+		mDataField2 = (TextView) findViewById(R.id.acc_value);
+		mDataField3 = (TextView) findViewById(R.id.gyr_value);
 
 		getActionBar().setTitle(mDeviceName);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -364,11 +383,21 @@ public class DeviceControlActivity extends Activity {
 		});
 	}
 
-	private void displayData(String data) {
+	private void displayData(String data,String data1,String data2,String data3,String data4,String data5,String data6,String data7,String data8,String data9) {
 		if (data != null) {
 			mDataField.setText(data);
 		}
+		if ((data1 != null) && (data2 != null) && (data3 != null)) {
+			mDataField1.setText(data1 + "    " + data2 + "    " + data3);
+		}
+		if ((data4 != null) && (data5 != null) && (data6 != null)) {
+			mDataField2.setText(data4 + "    " + data5 + "    " + data6);
+		}
+		if ((data7 != null) && (data8 != null) && (data9 != null)) {
+			mDataField3.setText(data7 + "    " + data8 + "    " + data9);
+		}
 	}
+
 
 	// Demonstrates how to iterate through the supported GATT
 	// Services/Characteristics.
