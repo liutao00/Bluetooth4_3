@@ -56,6 +56,8 @@ public class BluetoothLeService extends Service {
 	private static final int STATE_CONNECTING = 1;
 	private static final int STATE_CONNECTED = 2;
 
+	public Integer pre1_last=0;
+
 	public final static String ACTION_GATT_CONNECTED = "com.example.bluetooth.le.ACTION_GATT_CONNECTED";
 	public final static String ACTION_GATT_DISCONNECTED = "com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
 	public final static String ACTION_GATT_SERVICES_DISCOVERED = "com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
@@ -205,6 +207,9 @@ public class BluetoothLeService extends Service {
 				Integer pre2 = Integer.parseInt(temp,16);
 				temp = stringBuilder2.substring(10,14);
 				Integer pre3 = Integer.parseInt(temp,16);
+
+				pre1 = (pre1 > pre1_last) ? pre1 : pre1_last;
+				pre1_last = pre1;
 
 				temp = stringBuilder2.substring(14,18);
 				Integer acc1 = Integer.parseInt(temp,16);
